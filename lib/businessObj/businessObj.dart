@@ -1,7 +1,5 @@
 
 
-
-
 import '../databaseObj/databaseObj.dart';
 
 class BusinessObj{
