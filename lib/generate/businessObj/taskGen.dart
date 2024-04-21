@@ -25,14 +25,14 @@ class TaskGen extends BusinessObj
   int get taskGroupId => _localDbObj.taskGroupId;
   String get name => _localDbObj.name;
   String get description => _localDbObj.description;
-  String get isDone => _localDbObj.isDone;
+  bool get isDone => _localDbObj.isDone;
   DateTime get insertTime => _localDbObj.insertTime;
   DateTime get updateTime => _localDbObj.updateTime;
 
 
-  set taskGroupId(int value)
+  set taskGroup(TaskGroup value)
   {
-    _localDbObj.taskGroupId = value;
+    _localDbObj.taskGroup = value;
   }
   set name(String value)
   {
@@ -42,7 +42,7 @@ class TaskGen extends BusinessObj
   {
     _localDbObj.description = value;
   }
-  set isDone(String value)
+  set isDone(bool value)
   {
     _localDbObj.isDone = value;
   }
@@ -71,5 +71,13 @@ class TaskGen extends BusinessObj
     return objDb.fromMap(map);
   }
 
+  @override
+  Task clone() {
+    Task result = TaskGen.newObj(); 
+
+    super.cloneDB(result._localDbObj);
+    
+    return result ; 
+  }
 
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasker/pages/mainPage.dart';
 
 import 'services/databaseService.dart';
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
     DatabaseService.initializeDb();
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Tasker',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -36,11 +37,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MainPage() ,
     );
   }
 }
-
+/*
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -128,3 +129,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+*/

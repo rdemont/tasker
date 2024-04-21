@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../services/databaseService.dart';
 
-
 class DatabaseObj{
 
   static const MODE_NONE = 0;
@@ -140,4 +139,13 @@ class DatabaseObj{
 
     }
 
+  
+  clone(DatabaseObj value)
+  {
+print ("****CLONE ID $id ");    
+    value._id = _id;
+    value.mode = mode;
+    tableName = tableName; 
+  }
 }
+

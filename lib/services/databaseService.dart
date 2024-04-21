@@ -56,20 +56,22 @@ class DatabaseService {
     });
   }
 
-  static openDB(Database db) {
+  static openDB(Database db) async {
     //db.execute("UPDATE Todo SET groupId = 0 WHERE groupId IS NULL");
     
-    print("** rename table **"); 
-          
-
-    //db.execute("DROP TABLE task");
-    //db.execute("DROP TABLE taskGroup");
+    /*
+    print("** Drop table **"); 
+    await db.execute("DROP TABLE IF EXISTS task");
+    await db.execute("DROP TABLE IF EXISTS taskGroup");
+    await db.execute("DROP TABLE IF EXISTS tag");
+    await db.execute("DROP TABLE IF EXISTS tagTask");
 
     //db.execute("DELETE FROM  task");
     //db.execute("DELETE FROM  taskGroup");
 
-    createTables(db);
-
+    print("** create table **"); 
+    await createTables(db);
+    */
 
 
     print("** show tables **");
@@ -127,6 +129,7 @@ class DatabaseService {
         
       }
     });
+  
   }
 
   static updateTables(Database db, int oldVersion, int newVersion) {
@@ -153,13 +156,14 @@ class DatabaseService {
   }
 
   static Future<void> createTables(Database database) async {
+    
     await database.execute("""
       CREATE TABLE IF NOT EXISTS task(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           taskGroupId int NOT NULL,          
           name TEXT NOT NULL,
           description TEXT,
-          isDone Boolean,
+          isDone BOOLEAN,
           insertTime DATETIME DEFAULT CURRENT_TIMESTAMP, 
           updateTime DATETIME DEFAULT CURRENT_TIMESTAMP  
       )      
@@ -171,6 +175,24 @@ class DatabaseService {
         name TEXT NOT NULL,
         insertTime DATETIME DEFAULT CURRENT_TIMESTAMP,
         updateTime DATETIME DEFAULT CURRENT_TIMESTAMP  
+      )          
+    """);
+
+
+    await database.execute("""
+      CREATE TABLE IF NOT EXISTS tag(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        insertTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updateTime DATETIME DEFAULT CURRENT_TIMESTAMP  
+      )          
+    """);
+
+    await database.execute("""
+      CREATE TABLE IF NOT EXISTS tagTask(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tagId INTEGER NOT NULL,
+        taskId INTEGER NOT NULL
       )          
     """);
 

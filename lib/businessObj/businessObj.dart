@@ -1,8 +1,9 @@
 
 
+
 import '../databaseObj/databaseObj.dart';
 
-class BusinessObj{
+abstract class BusinessObj{
 
   DatabaseObj dbObj ;
 
@@ -26,6 +27,13 @@ print ("BusinessObj - SAVE- ID: $id");
     });
   }
 
+  cloneDB(DatabaseObj value)
+  {
+    dbObj.clone(value);
+  }
 
+
+  
+  BusinessObj clone(); 
 
 }

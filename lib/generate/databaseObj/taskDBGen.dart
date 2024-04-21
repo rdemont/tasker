@@ -11,7 +11,7 @@ class TaskDBGen extends DatabaseObj {
   int _taskGroupId = 0;
   String _name = '';
   String _description = '';
-  String _isDone = '';
+  bool _isDone = true;
   DateTime _insertTime = DateTime.now();
   DateTime _updateTime = DateTime.now();
 
@@ -26,18 +26,19 @@ class TaskDBGen extends DatabaseObj {
   int get taskGroupId => _taskGroupId;
   String get name => _name;
   String get description => _description;
-  String get isDone => _isDone;
+  bool get isDone => _isDone;
   DateTime get insertTime => _insertTime;
   DateTime get updateTime => _updateTime;
 
 
 
-  set taskGroupId(int value)
+  set taskGroup(TaskGroup value)
   {
-    if (_taskGroupId != value)
+    if (_taskGroupId != value.id)
     {
       dataUpdated(); 
-      _taskGroupId = value;
+      _taskGroupId = value.id;
+      _taskGroup = value;
     }
   }
   set name(String value)
@@ -56,7 +57,7 @@ class TaskDBGen extends DatabaseObj {
       _description = value;
     }
   }
-  set isDone(String value)
+  set isDone(bool value)
   {
     if (_isDone != value)
     {
@@ -113,6 +114,7 @@ class TaskDBGen extends DatabaseObj {
       TaskGen.COLUMN_TASKGROUPID : _taskGroupId,
       TaskGen.COLUMN_NAME : _name,
       TaskGen.COLUMN_DESCRIPTION : _description,
+      TaskGen.COLUMN_ISDONE : _isDone,
       TaskGen.COLUMN_INSERTTIME : _insertTime.millisecondsSinceEpoch,
       TaskGen.COLUMN_UPDATETIME : _updateTime.millisecondsSinceEpoch,
 
@@ -133,6 +135,7 @@ class TaskDBGen extends DatabaseObj {
     }
     _name = (map[TaskGen.COLUMN_NAME]??'') as String;
     _description = (map[TaskGen.COLUMN_DESCRIPTION]??'') as String;
+    _isDone = ((map[TaskGen.COLUMN_ISDONE]??0) as int) == 1;
     _insertTime = DateTime.fromMillisecondsSinceEpoch((map[TaskGen.COLUMN_INSERTTIME]??0) as int);
     _updateTime = DateTime.fromMillisecondsSinceEpoch((map[TaskGen.COLUMN_UPDATETIME]??0) as int);
 
@@ -142,6 +145,17 @@ class TaskDBGen extends DatabaseObj {
 
   }
 
+ 
+  @override
+  clone(DatabaseObj value)
+  {
+    super.clone(value);
+    (value as TaskDBGen)._taskGroupId = taskGroupId;
+    (value as TaskDBGen)._name = name;
+    (value as TaskDBGen)._description = description;
+    (value as TaskDBGen)._isDone = isDone;
+    (value as TaskDBGen)._insertTime = insertTime;
+    (value as TaskDBGen)._updateTime = updateTime;
 
-
+  }
 }

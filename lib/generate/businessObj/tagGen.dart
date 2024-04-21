@@ -1,15 +1,15 @@
-import '../databaseObj/taskGroupDBGen.dart';
-import '../../businessObj/taskGroup.dart';
+import '../databaseObj/tagDBGen.dart';
+import '../../businessObj/tag.dart';
 import '../../businessObj/businessObj.dart';
 
 
-class TaskGroupGen extends BusinessObj
+class TagGen extends BusinessObj
 {
-  TaskGroupDBGen get _localDbObj => dbObj as TaskGroupDBGen ;
+  TagDBGen get _localDbObj => dbObj as TagDBGen ;
 
-  TaskGroupGen(super.dbObj);
+  TagGen(super.dbObj);
 
-  static const String TABLE_NAME = "taskGroup";
+  static const String TABLE_NAME = "tag";
   static const String COLUMN_ID = "id";
   static const String COLUMN_NAME = "name";
   static const String COLUMN_INSERTTIME = "insertTime";
@@ -36,24 +36,24 @@ class TaskGroupGen extends BusinessObj
   }
 
 
-  static TaskGroup newObj(){
-    TaskGroupDBGen objDb = TaskGroupDBGen();
+  static Tag newObj(){
+    TagDBGen objDb = TagDBGen();
     return objDb.newObj();
   }
 
-  static Future<TaskGroup> openObj(int id){
-    TaskGroupDBGen objDb = TaskGroupDBGen();
+  static Future<Tag> openObj(int id){
+    TagDBGen objDb = TagDBGen();
     return objDb.open(id);
   }
 
-  static Future<TaskGroup> fromMap(Map<String,Object?>map){
-    TaskGroupDBGen objDb = TaskGroupDBGen();
+  static Future<Tag> fromMap(Map<String,Object?>map){
+    TagDBGen objDb = TagDBGen();
     return objDb.fromMap(map);
   }
 
   @override
-  TaskGroup clone() {
-    TaskGroup result = TaskGroupGen.newObj(); 
+  Tag clone() {
+    Tag result = TagGen.newObj(); 
 
     super.cloneDB(result._localDbObj);
     

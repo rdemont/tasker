@@ -97,6 +97,14 @@ class TaskGroupDBGen extends DatabaseObj {
 
   }
 
+ 
+  @override
+  clone(DatabaseObj value)
+  {
+    super.clone(value);
+    (value as TaskGroupDBGen)._name = name;
+    (value as TaskGroupDBGen)._insertTime = insertTime;
+    (value as TaskGroupDBGen)._updateTime = updateTime;
 
-
+  }
 }
