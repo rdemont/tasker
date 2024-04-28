@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:tasker/businessObj/tagList.dart';
 import 'package:tasker/businessObj/taskGroupList.dart';
-import 'package:tasker/generate/businessObj/tagGen.dart';
 import 'package:tasker/generate/businessObj/taskGen.dart';
 import 'package:tasker/pages/taskGroupPage.dart';
 
@@ -25,13 +26,15 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
 
   late TaskGroup _taskGroup ;
-  List<Tag> _tag = [] ; 
+
+  List<Tag> _tagSelected = [] ; 
   List<Task> _taskList = [] ; 
   List<TaskGroup> _taskGroupList = [] ; 
   List<Tag> _tagList = [] ; 
+  
 
   bool _isLoaded = false  ; 
-  bool _showCheckedOnly = false ; 
+  int _showCheckedOnly = 0 ; 
   bool _showPerTags = false ; 
 
   @override
@@ -40,9 +43,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
     _taskGroup = widget.taskGroup; 
 
-    //ToDo: Must to be change 
-    _tag.add(TagGen.newObj());
-    _tag[0].name = "Default";
+    
 
   }
 
@@ -64,11 +65,8 @@ class _TaskListPageState extends State<TaskListPage> {
 
         TagList.getAll().then((value) {
           _tagList = value ; 
-          if (_tagList.length >0 )
-          {
-            _tag[0]= _tagList[0];
-          }
-          //return ;
+          _tagSelected.clear();
+          _tagSelected.addAll(_tagList) ; 
         },),
 
 
@@ -88,11 +86,12 @@ print("*******************Is Loaded************ ") ;
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-            icon:Icon(_showCheckedOnly?Icons.check_outlined:Icons.all_inclusive_outlined),
-            tooltip: "Marteler",
+            icon:Icon((_showCheckedOnly==0)?Icons.all_inclusive_outlined:((_showCheckedOnly==1)?Icons.check_outlined:Icons.cancel_outlined)),
+            tooltip: (_showCheckedOnly==0)?"All":((_showCheckedOnly==1)?"Not done": "Done"),
             onPressed: () {
               setState(() {
-                _showCheckedOnly = !_showCheckedOnly ;  
+                _showCheckedOnly = _showCheckedOnly>1?0:_showCheckedOnly+1 ;  
+
               });
               
             },
@@ -105,7 +104,7 @@ print("*******************Is Loaded************ ") ;
                 _isLoaded = false ;
                 _showPerTags = !_showPerTags ;  
               });                
-              TaskList.getFromTags([1,2]).then((value) {
+              TaskList.getFromTags(_tagSelected).then((value) {
                 setState(() {
                   _taskList = value ;
                   _isLoaded = true ;                   
@@ -114,7 +113,12 @@ print("*******************Is Loaded************ ") ;
             },
           )
         ],
-        title: Text((_showPerTags?getTagListName():_taskGroup.name), overflow: TextOverflow.ellipsis),
+        title: Row(
+          children: [
+            Text(_showPerTags?"#:":""), 
+            Text((_showPerTags?getTagListName():_taskGroup.name), overflow: TextOverflow.ellipsis,style: (_showPerTags ?TextStyle(fontSize: 14) : TextStyle()),)
+            ]
+          ),
       ),
       drawer:_showPerTags?getTagsDrawer():getGroupDrawer(),       
       body: _isLoaded?getBody():getWaite(), 
@@ -213,18 +217,25 @@ print("*******************Is Loaded************ ") ;
                 return GestureDetector(
                   onTap: () {
                     setState(() {  
-                      if (_tag.contains(_tagList[index]))
-                      {
-                        _tag.remove(_tagList[index]);
+                      if (_tagSelected.contains(_tagList[index]))
+                      { 
+print("****TAGSELECTED NB : ${_tagSelected.length}")  ;                                                                  
+                        _tagSelected.remove(_tagList[index]);
                       }else {
-                        _tag.add(_tagList[index]);
+                        _tagSelected.add(_tagList[index]);
                       }
+                    });
+                    TaskList.getFromTags(_tagSelected).then((value) {
+                      setState(() {
+                        _taskList = value ;   
+print("**** Task list nb : ${_taskList.length}");                        
+                      });
                     });
                   },
                   child: ListTile(
                     //leading: CircleAvatar(child: Text(_taskList[index].name)),
                     title: Text(_tagList[index].name, overflow: TextOverflow.ellipsis),  
-                    trailing: Icon(_tag.contains(_tagList[index]) ? Icons.check :Icons.cancel_outlined)       
+                    trailing: Icon(_tagSelected.contains(_tagList[index]) ? Icons.check :Icons.cancel_outlined)       
                   )
                 );
               }
@@ -253,11 +264,24 @@ print("*******************Is Loaded************ ") ;
   String getTagListName()
   {
     String result = "" ; 
-    for(int i=0;i<_tag.length;i++)
+
+    for(int i=0;i<_tagSelected.length;i++)
     {
-      result = result + _tag[i].name+"|" ;
+      if (i < 3)
+      {
+        
+        result = "$result${_tagSelected[i].name.substring(0,((_tagSelected[i].name.length> 25)?25:_tagSelected[i].name.length))}\n" ;
+      }
     }
-    result = result.substring(0,result.length-1);
+    if (result.length > 0)
+    {
+      result = result.substring(0,result.length-1);
+    }
+
+    if  (_tagSelected.length > 3)
+    {
+      result = result +"...[${_tagSelected.length}]";
+    }
     return result ; 
   }
 
@@ -292,9 +316,9 @@ print("*******************Is Loaded************ ") ;
           itemCount: _taskList.length,
           itemBuilder: (BuildContext context, int index) {
             return Visibility(
-              visible: !_showCheckedOnly|(_showCheckedOnly&_taskList[index].isDone),
+              visible: _showCheckedOnly==0||((_showCheckedOnly==1)&_taskList[index].isDone)||((_showCheckedOnly==2)&(!_taskList[index].isDone)),
               child: GestureDetector(
-                //onLongPress: () => showSpecies(_speciesList[index]),
+                onLongPress: () => showTask(_taskList[index]),
                 onTap: () => isDoneChange(_taskList[index]),
                 child: ListTile(
                   leading: CircleAvatar(child: Text(_taskList[index].taskGroup.name, overflow: TextOverflow.fade)),
@@ -320,9 +344,9 @@ print("*******************Is Loaded************ ") ;
           itemCount: _taskList.length,
           itemBuilder: (BuildContext context, int index) {
             return Visibility(
-              visible: !_showCheckedOnly|(_showCheckedOnly&_taskList[index].isDone),
+              visible: _showCheckedOnly==0||((_showCheckedOnly==1)&_taskList[index].isDone)||((_showCheckedOnly==2)&(!_taskList[index].isDone)),
               child: GestureDetector(
-                //onLongPress: () => showSpecies(_speciesList[index]),
+                onLongPress: () => showTask(_taskList[index]),
                 onTap: () => isDoneChange(_taskList[index]),
                 child: ListTile(
                   //leading: CircleAvatar(child: Text(_taskList[index].name)),
@@ -346,6 +370,23 @@ print("*******************Is Loaded************ ") ;
     
     task.save();
   }
+
+  showTask(Task task)
+  {
+    task.taskGroup = _taskGroup ; 
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) =>  TaskPage(task: task,)  )
+    ).then((value){
+      TaskList.getFromTaskGroup(_taskGroup.id).then((value) {
+        setState(() {
+          _taskList = value ; 
+        });
+      });
+    });
+
+  }
+
 
  addTask() {
     Task task = TaskGen.newObj();

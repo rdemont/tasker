@@ -7,6 +7,6 @@ class TaskGroupList extends TaskGroupListGen
 {
 
   static Future<List<TaskGroup>> getAll([String? order]){
-    return TaskGroupListGen.getAll(order);
+    return TaskGroupListGen.getAll(order: order);
   }
 }

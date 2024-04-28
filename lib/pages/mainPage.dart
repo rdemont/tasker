@@ -60,6 +60,10 @@ class _MainPageState extends State<MainPage> {
       }),
 
     ]).then((value) {
+      setState(() {
+        _isLoaded = true ;   
+      });
+      
       loadData();
     });
 

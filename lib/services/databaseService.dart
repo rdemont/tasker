@@ -73,6 +73,9 @@ class DatabaseService {
     await createTables(db);
     */
 
+    //await db.execute("INSERT INTO tag (name) VALUES (\"Chocolat\")");
+    //await db.execute("INSERT INTO tag (name) VALUES (\"Camembert\")");
+    //await db.execute("DELETE FROM  tag WHERE Id >= 5");
 
     print("** show tables **");
     db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;').then((tables) 
@@ -196,7 +199,7 @@ class DatabaseService {
       )          
     """);
 
-    //await database.insert('Groups', Group(name: "Default").toMap());
+    //await database.insert('tagTask', Group(name: "Default").toMap());
 
   }
 
