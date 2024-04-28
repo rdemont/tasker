@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -8,30 +6,15 @@ import 'package:tasker/generate/businessObj/tagGen.dart';
 import '../businessObj/tag.dart';
 
 
-
-/*
-const List<String> _pizzaToppings = <String>[
-  'Olives',
-  'Tomato',
-  'Cheese',
-  'Pepperoni',
-  'Bacon',
-  'Onion',
-  'Jalapeno',
-  'Mushrooms',
-  'Pineapple',
-];
-*/
-
 class TagsWidget extends StatefulWidget {
 
-  List<Tag> allTags = [];
-  List<Tag> selectedTag = []; 
+  final List<Tag> allTags;
+  final List<Tag> selectedTag; 
 
   TagsWidget({
     super.key,
     required this.allTags,
-    required this.selectedTag,
+    required this.selectedTag
   });
 
   @override
@@ -146,14 +129,14 @@ print("++_onSubmitted -- Add new Tag ***************** NB: ${widget.selectedTag.
     } else {
       _chipFocusNode.unfocus();
       setState(() {
-        widget.selectedTag = <Tag>[];
+        widget.selectedTag.clear() ; // = <Tag>[];
       });
     }
   }
 
   void _onChanged(List<Tag> data) {
     setState(() {
-      widget.selectedTag = data;
+      widget.selectedTag.addAll(data); // = data;
     });
   }
 
