@@ -174,10 +174,6 @@ print("_selectedTag Length : ${_selectedTag.length}");
 
       });
       
-      for (Tag tag in _selectedTag)
-      {
-
-      }
 
       Navigator.pop(context);
     });
